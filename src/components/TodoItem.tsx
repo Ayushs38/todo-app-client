@@ -21,7 +21,17 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, fetchTodos }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const updateTodo = async () => {
-    axios.patch(`${url}/todo/${todo.id}`, { title, description })
+    axios.patch(`${url}/todo/${todo.id}`,
+      {
+        title: title,
+        description: description
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }
+    )
       .then(
         (response: any) => {
           fetchTodos();
@@ -37,7 +47,13 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, fetchTodos }) => {
   };
 
   const markComplete = async () => {
-    axios.patch(`${url}/todo/${todo.id}/complete`, { isCompleted: !todo.isCompleted })
+    axios.patch(`${url}/todo/${todo.id}/complete`, { isCompleted: !todo.isCompleted },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }
+    )
       .then(
         (response: any) => {
           fetchTodos();
@@ -53,8 +69,14 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, fetchTodos }) => {
 
   const deleteTodo = async () => {
     const confirmDelete = confirm(`Would you like to delete the task ${todo.title} ?`)
-    if(!confirmDelete) return;
-    axios.delete(`${url}/todo/${todo.id}`)
+    if (!confirmDelete) return;
+    axios.delete(`${url}/todo/${todo.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }
+    )
       .then(
         (response: any) => {
           fetchTodos();

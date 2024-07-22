@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useState } from 'react'
 import { Link,  useNavigate } from 'react-router-dom'
 import { url } from '../envConstants'
+import toast from 'react-hot-toast'
 const SignUp = () => {
   const [data, setData] = useState({
     username: '',
@@ -22,9 +23,18 @@ const SignUp = () => {
   const handleSignUp = async (e: any) =>{
     e.preventDefault();
     try {
-      await axios.post(`${url}/auth/signup`, data);
-      console.log('Sign Up succesfull');
-      navigate('/signin')
+      const response = await axios.post(`${url}/auth/signup`, data,
+        {
+          headers:{
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const { accessToken} = response.data
+      localStorage.setItem('token', accessToken);
+      console.log('User signed up successfully', response.data);
+      toast.success('Welcome, new user!') 
+      navigate('/todo')
       
     } catch (error) {
       console.error('Sign Up Error:', error);

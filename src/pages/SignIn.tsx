@@ -4,38 +4,43 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { url } from '../envConstants';
+import toast from 'react-hot-toast';
 const SignIn = () => {
-    const [data, setData] = useState({
-        email: '',
-        password: ''
-    });
-    const navigate = useNavigate();
+  const [data, setData] = useState({
+    email: '',
+    password: ''
+  });
+  const navigate = useNavigate();
 
-    const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        setData((prevData) => ({
-            ...prevData,
-            [name]: value
-        }));
-    };
-
-
-    const handleSignIn = async (e: any) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post(`${url}/auth/signin`, data);
-            const token = response.data.accessToken;
-            localStorage.setItem('token', token); // Store the JWT in localStorage
-            console.log('Sign In Successful:', token);
-            navigate('/todo'); // Redirect to a protected route after successful sign-in
-        } catch (error) {
-            console.error('Sign In Error:', error);
-        }
-    };
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
 
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+  const handleSignIn = async (e: any) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${url}/auth/signin`, data);
+      const token = response.data.accessToken;
+
+
+      localStorage.setItem('token', token); // Store the JWT in localStorage
+      console.log('Sign In Successful:', token);
+      toast.success('User logged In! Greetings!')
+
+      navigate('/todo'); // Redirect to a protected route after successful sign-in
+    } catch (error) {
+      console.error('Sign In Error:', error);
+    }
+  };
+
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Box as="form" onSubmit={handleSignIn} className="p-6 bg-white shadow-lg rounded-lg">
         <h2 className=' mb-4 text-2xl font-bold'>Sign in Here</h2>
         <FormControl >
@@ -68,7 +73,7 @@ const SignIn = () => {
         </FormControl>
       </Box>
     </div>
-    )
+  )
 }
 
 export default SignIn

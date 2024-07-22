@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import ProtectedRoute from './components/ProtectedRoutes'
 import Profile from './pages/Profile'
 import Todo from './pages/Todo'
+import { Toaster } from 'react-hot-toast'
 
 
 function App() {
@@ -16,9 +17,12 @@ function App() {
     <>
       <ThemeProvider>
         <BaseStyles>
-          
+          <Toaster
+            position="bottom-right"
+            reverseOrder={true}
+          />
           <Router>
-            
+
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/signup" element={<SignUp />} />
@@ -26,7 +30,7 @@ function App() {
               <Route path="/" element={<ProtectedRoute />}>
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/todo" element={<Todo />} />
-                
+
               </Route>
             </Routes>
           </Router>

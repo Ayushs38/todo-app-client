@@ -1,9 +1,10 @@
-import { Button } from "@primer/react";
+import { Button, Avatar } from "@primer/react";
 import { ButtonDanger } from "@primer/react/deprecated";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { url } from "../envConstants";
+import toast from "react-hot-toast";
 
 interface UserProfile {
   username: string;
@@ -18,12 +19,14 @@ const NavBar = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
+
         if (token) {
           const response = await axios.get(`${url}/auth/profile`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
+          // console.log("response data:", response)
           setProfile(response.data);
         }
       } catch (error) {
@@ -35,9 +38,10 @@ const NavBar = () => {
 
   const handleSignOut = async () => {
     try {
-      localStorage.removeItem('token'); // Remove token from localStorage
-      setProfile(null); // Clear profile state
-      navigate('/signin'); // Redirect to sign-in page
+      localStorage.removeItem('token');
+      setProfile(null);
+      toast.success("User Logged In!")
+      navigate('/signin');
     } catch (error) {
       console.error('Sign Out Error:', error);
     }
@@ -51,7 +55,14 @@ const NavBar = () => {
       <div className="flex items-center">
         {profile ? (
           <>
-            <span className="mr-4">Welcome, {profile.username}</span>
+
+            <span className="mr-4">
+              <Link to='/profile' >
+                <Avatar src="https://avatars.githubusercontent.com/u/92997159?v=4"
+                size={30} className=" m-2"/>
+                Welcome, {profile.email}
+              </Link>
+            </span>
             <ButtonDanger onClick={handleSignOut}>Logout</ButtonDanger>
           </>
         ) : (
